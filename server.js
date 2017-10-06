@@ -16,9 +16,9 @@ app.use(express.static(__dirname + '/public'));
 
 // our database is an array for now with some hardcoded values
 var todos = [
-  // { _id: 1, task: 'Laundry', description: 'Wash clothes' },
-  // { _id: 2, task: 'Grocery Shopping', description: 'Buy dinner for this week' },
-  // { _id: 3, task: 'Homework', description: 'Make this app super awesome!' }
+  { _id: 1, task: 'Laundry', description: 'Wash clothes' },
+  { _id: 2, task: 'Grocery Shopping', description: 'Buy dinner for this week' },
+  { _id: 3, task: 'Homework', description: 'Make this app super awesome!' }
 ];
 
 /**********
@@ -53,18 +53,39 @@ app.get('/api/todos/search', function search(req, res) {
 app.get('/api/todos', function index(req, res) {
   /* This endpoint responds with all of the todos
    */
+  res.json({todos: todos});
 });
 
 app.post('/api/todos', function create(req, res) {
   /* This endpoint will add a todo to our "database"
    * and respond with the newly created todo.
    */
+  // take input from form and parse it out
+  let newID = 0; // how to add an ID and auto-increment it by 1?
+  for (let i = 0; i < todos.length; i++) {
+    newID = todos[i]._id;
+  };
+  newID ++;
+  let newTask = req.body.task;
+  let newDescription = req.body.description;
+
+  // push the new todo object into the todos array
+  let newTodo = { "_id" : newID , "task" : newTask, "description" : newDescription };
+  todos.push(newTodo);
+
+  // show the new todo object
+  res.json(newTodo);
 });
 
 app.get('/api/todos/:id', function show(req, res) {
   /* This endpoint will return a single todo with the
    * id specified in the route parameter (:id)
    */
+  for (let i = 0; i < todos.length; i++) {
+    if (req.params.id == todos[i]._id) {
+      res.json(todos[i]);
+    };
+  };
 });
 
 app.put('/api/todos/:id', function update(req, res) {
