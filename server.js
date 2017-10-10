@@ -33,6 +33,9 @@ app.get('/', function homepage(req, res) {
   res.sendFile(__dirname + '/views/index.html');
 });
 
+app.get('/search', function homepage(req, res) {
+  res.sendFile(__dirname + '/views/search.html');
+});
 
 /*
  * JSON API Endpoints
@@ -57,7 +60,7 @@ app.get('/api/todos/search', function search(req, res) {
     // sets the todo task to lowercase
     let todoInQuestion = todos[i].task.toLowerCase();
 
-    // if the todo task includes the search from the URL, then do nothing
+    // if the todo task includes the search string from the URL, then do nothing
     if (todoInQuestion.includes(urlQuery)) {
     } 
     // if the todo task does NOT include the search term, then get it out of the array
@@ -67,7 +70,7 @@ app.get('/api/todos/search', function search(req, res) {
     };
   };
 
-  // then display the array of todos leftover
+  // finally, display the array of matching todos 
   res.json({todos : todos});
 });
 
@@ -76,6 +79,7 @@ app.get('/api/todos', function index(req, res) {
    */
 
   //display all of the todos
+  //res.response({todos: todos});
   res.json({todos : todos});
 });
 

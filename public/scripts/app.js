@@ -4,6 +4,9 @@ $(document).ready(function() {
   // base API route
   var baseUrl = '/api/todos';
 
+  // search URL
+  var searchUrl = '/api/todos/search';
+
   // array to hold todo data from API
   var allTodos = [];
 
@@ -12,6 +15,9 @@ $(document).ready(function() {
 
   // form to create new todo
   var $createTodo = $('#create-todo');
+
+  // form to create todo search
+  var $searchTodo = $('#search-todo');
 
   // compile handlebars template
   var source = $('#todos-template').html();
@@ -72,6 +78,35 @@ $(document).ready(function() {
     $createTodo[0].reset();
     $createTodo.find('input').first().focus();
   });
+
+  // listen for submit on search form 
+  $searchTodo.on('submit', function (event) {
+    event.preventDefault();
+
+    // serialze form data
+    var newSearch = $(this).serialize();
+
+    // GET request to find all similar todos
+    $.ajax({
+      method: "GET",
+      url: searchUrl,
+      data: newSearch,
+      success: function onSearchSuccess(json) {
+        console.log(json);
+
+        // add new todo to `allTodos`
+        //allTodos.push(json);
+
+        // render all todos to view
+        render();
+      }
+    });
+
+    // reset the form
+    $searchTodo[0].reset();
+    $searchTodo.find('input').first().focus();
+  });
+
 
   // add event-handlers to todos for updating/deleting
   $todosList
