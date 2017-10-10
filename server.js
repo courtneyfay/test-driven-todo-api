@@ -48,12 +48,23 @@ app.get('/api/todos/search', function search(req, res) {
   /* This endpoint responds with the search results from the
    * query in the request. COMPLETE THIS ENDPOINT LAST.
    */
+  //parse out the search term from the request
+  let urlQuery = req._parsedUrl.query.substring(2);
+  //loop through all the .task to see if you can find the search term
+  for (let i = 0; i < todos.length; i ++) {
+    let todoInQuestion = todos[i].task.toLowerCase();
+    if (todoInQuestion.includes(urlQuery)) {
+      //works but is too literal: urlQuery === todos[i].task.toLowerCase()
+      //return all relevant tasks and descriptions in their entirety
+      res.json(todos[i]);
+    };
+  };
 });
 
 app.get('/api/todos', function index(req, res) {
   /* This endpoint responds with all of the todos
    */
-  res.json({todos: todos});
+  res.json({todos : todos});
 });
 
 app.post('/api/todos', function create(req, res) {
@@ -93,6 +104,13 @@ app.put('/api/todos/:id', function update(req, res) {
    * id specified in the route parameter (:id) and respond
    * with the newly updated todo.
    */
+   for (let i = 0; i < todos.length; i++) {
+    if (req.params.id == todos[i]._id) {
+      todos[i].task = req.body.task;
+      todos[i].description = req.body.description;
+      res.json(todos[i]);     
+    };
+   };
 });
 
 app.delete('/api/todos/:id', function destroy(req, res) {
@@ -100,6 +118,14 @@ app.delete('/api/todos/:id', function destroy(req, res) {
    * id specified in the route parameter (:id) and respond
    * with deleted todo.
    */
+   for (let i = 0; i < todos.length; i++) {
+    if (req.params.id == todos[i]._id) {
+      res.json(todos[i]);
+      let arrayNumber = todos[i]._id - 1;
+      //res.json(arrayNumber);
+      todos.splice(arrayNumber,1);
+    };
+   };
 });
 
 /**********
