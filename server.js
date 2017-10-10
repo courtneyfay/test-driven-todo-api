@@ -48,22 +48,34 @@ app.get('/api/todos/search', function search(req, res) {
   /* This endpoint responds with the search results from the
    * query in the request. COMPLETE THIS ENDPOINT LAST.
    */
-  //parse out the search term from the request
+
+  // removes ?= from beginning of the url query
   let urlQuery = req._parsedUrl.query.substring(2);
-  //loop through all the .task to see if you can find the search term
+
   for (let i = 0; i < todos.length; i ++) {
+
+    // sets the todo task to lowercase
     let todoInQuestion = todos[i].task.toLowerCase();
+
+    // if the todo task includes the search from the URL, then do nothing
     if (todoInQuestion.includes(urlQuery)) {
-      //works but is too literal: urlQuery === todos[i].task.toLowerCase()
-      //return all relevant tasks and descriptions in their entirety
-      res.json(todos[i]);
+    } 
+    // if the todo task does NOT include the search term, then get it out of the array
+    else {
+      let arrayNumber = todos[i]._id - 1;
+      todos.splice(arrayNumber,1);
     };
   };
+
+  // then display the array of todos leftover
+  res.json({todos : todos});
 });
 
 app.get('/api/todos', function index(req, res) {
   /* This endpoint responds with all of the todos
    */
+
+  //display all of the todos
   res.json({todos : todos});
 });
 
@@ -72,7 +84,7 @@ app.post('/api/todos', function create(req, res) {
    * and respond with the newly created todo.
    */
   // take input from form and parse it out
-  let newID = 0; // how to add an ID and auto-increment it by 1?
+  let newID = 0; 
   for (let i = 0; i < todos.length; i++) {
     newID = todos[i]._id;
   };
@@ -84,7 +96,7 @@ app.post('/api/todos', function create(req, res) {
   let newTodo = { "_id" : newID , "task" : newTask, "description" : newDescription };
   todos.push(newTodo);
 
-  // show the new todo object
+  // then display the new todo element
   res.json(newTodo);
 });
 
@@ -93,7 +105,11 @@ app.get('/api/todos/:id', function show(req, res) {
    * id specified in the route parameter (:id)
    */
   for (let i = 0; i < todos.length; i++) {
+
+    // if the ID in the request matches the ID of the todo
     if (req.params.id == todos[i]._id) {
+
+      // then display that todo
       res.json(todos[i]);
     };
   };
@@ -106,8 +122,12 @@ app.put('/api/todos/:id', function update(req, res) {
    */
    for (let i = 0; i < todos.length; i++) {
     if (req.params.id == todos[i]._id) {
+
+      // update the task and description with those from the request
       todos[i].task = req.body.task;
       todos[i].description = req.body.description;
+
+      // then display the updated todo
       res.json(todos[i]);     
     };
    };
@@ -120,9 +140,12 @@ app.delete('/api/todos/:id', function destroy(req, res) {
    */
    for (let i = 0; i < todos.length; i++) {
     if (req.params.id == todos[i]._id) {
+      
+      // display the removed todo
       res.json(todos[i]);
+
+      // then remove the todo from the array
       let arrayNumber = todos[i]._id - 1;
-      //res.json(arrayNumber);
       todos.splice(arrayNumber,1);
     };
    };
